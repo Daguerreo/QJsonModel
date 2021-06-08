@@ -23,14 +23,15 @@
  */
 
 #include "qjsonmodel.h"
+
 #include <QFile>
 #include <QDebug>
 #include <QFont>
 
 
 QJsonTreeItem::QJsonTreeItem(QJsonTreeItem *parent)
+   : mParent(parent)
 {
-    mParent = parent;
 }
 
 QJsonTreeItem::~QJsonTreeItem()
@@ -98,14 +99,15 @@ QJsonValue::Type QJsonTreeItem::type() const
 
 QJsonTreeItem* QJsonTreeItem::load(const QJsonValue& value, QJsonTreeItem* parent)
 {
-    QJsonTreeItem * rootItem = new QJsonTreeItem(parent);
+    auto  rootItem = new QJsonTreeItem(parent);
     rootItem->setKey("root");
 
-    if ( value.isObject())
+    if (value.isObject())
     {
 
         //Get all QJsonValue childs
-        for (QString key : value.toObject().keys()){
+        QStringList keys = value.toObject().keys();
+        for (const QString& key : qAsConst(keys)){
             QJsonValue v = value.toObject().value(key);
             QJsonTreeItem * child = load(v,rootItem);
             child->setKey(key);
@@ -116,11 +118,11 @@ QJsonTreeItem* QJsonTreeItem::load(const QJsonValue& value, QJsonTreeItem* paren
 
     }
 
-    else if ( value.isArray())
+    else if (value.isArray())
     {
         //Get all QJsonValue childs
         int index = 0;
-        for (QJsonValue v : value.toArray()){
+        for (auto v : value.toArray()){
 
             QJsonTreeItem * child = load(v,rootItem);
             child->setKey(QString::number(index));
@@ -218,7 +220,7 @@ bool QJsonModel::loadJson(const QByteArray &json)
         return true;
     }
 
-    qDebug()<<Q_FUNC_INFO<<"cannot load json";
+    qDebug() << Q_FUNC_INFO << "cannot load json";
     return false;
 }
 
@@ -229,12 +231,9 @@ QVariant QJsonModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-
-    QJsonTreeItem *item = static_cast<QJsonTreeItem*>(index.internalPointer());
-
+    auto item = static_cast<QJsonTreeItem*>(index.internalPointer());
 
     if (role == Qt::DisplayRole) {
-
         if (index.column() == 0)
             return QString("%1").arg(item->key());
 
@@ -246,10 +245,7 @@ QVariant QJsonModel::data(const QModelIndex &index, int role) const
         }
     }
 
-
-
     return QVariant();
-
 }
 
 bool QJsonModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -275,7 +271,6 @@ QVariant QJsonModel::headerData(int section, Qt::Orientation orientation, int ro
         return QVariant();
 
     if (orientation == Qt::Horizontal) {
-
         return mHeaders.value(section);
     }
     else
@@ -306,8 +301,8 @@ QModelIndex QJsonModel::parent(const QModelIndex &index) const
     if (!index.isValid())
         return QModelIndex();
 
-    QJsonTreeItem *childItem = static_cast<QJsonTreeItem*>(index.internalPointer());
-    QJsonTreeItem *parentItem = childItem->parent();
+    auto childItem = static_cast<QJsonTreeItem*>(index.internalPointer());
+    auto parentItem = childItem->parent();
 
     if (parentItem == mRootItem)
         return QModelIndex();
