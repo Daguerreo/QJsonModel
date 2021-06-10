@@ -24,9 +24,9 @@
 
 #include "qjsonmodel.h"
 
-#include <QFile>
 #include <QDebug>
-#include <QFont>
+#include <QFile>
+#include <QJsonDocument>
 
 
 QJsonTreeItem::QJsonTreeItem(QJsonTreeItem *parent)
@@ -104,7 +104,6 @@ QJsonTreeItem* QJsonTreeItem::load(const QJsonValue& value, QJsonTreeItem* paren
 
     if (value.isObject())
     {
-
         //Get all QJsonValue childs
         QStringList keys = value.toObject().keys();
         for (const QString& key : qAsConst(keys)){
@@ -115,15 +114,14 @@ QJsonTreeItem* QJsonTreeItem::load(const QJsonValue& value, QJsonTreeItem* paren
             rootItem->appendChild(child);
 
         }
-
     }
 
     else if (value.isArray())
     {
         //Get all QJsonValue childs
         int index = 0;
-        for (auto v : value.toArray()){
-
+        for (auto v : value.toArray())
+        {
             QJsonTreeItem * child = load(v,rootItem);
             child->setKey(QString::number(index));
             child->setType(v.type());
@@ -133,7 +131,7 @@ QJsonTreeItem* QJsonTreeItem::load(const QJsonValue& value, QJsonTreeItem* paren
     }
     else
     {
-        rootItem->setValue(value.toVariant().toString());
+        rootItem->setValue(value.toString());
         rootItem->setType(value.type());
     }
 
@@ -224,10 +222,8 @@ bool QJsonModel::loadJson(const QByteArray &json)
     return false;
 }
 
-
 QVariant QJsonModel::data(const QModelIndex &index, int role) const
 {
-
     if (!index.isValid())
         return QVariant();
 
@@ -262,8 +258,6 @@ bool QJsonModel::setData(const QModelIndex &index, const QVariant &value, int ro
 
     return false;
 }
-
-
 
 QVariant QJsonModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
@@ -347,7 +341,6 @@ Qt::ItemFlags QJsonModel::flags(const QModelIndex &index) const
 
 QJsonDocument QJsonModel::json() const
 {
-
     auto v = genJson(mRootItem);
     QJsonDocument doc;
 
@@ -372,7 +365,7 @@ QJsonValue  QJsonModel::genJson(QJsonTreeItem * item) const
             auto key = ch->key();
             jo.insert(key, genJson(ch));
         }
-        return  jo;
+        return jo;
     } else if (QJsonValue::Array == type) {
         QJsonArray arr;
         for (int i = 0; i < nchild; ++i) {
@@ -384,5 +377,4 @@ QJsonValue  QJsonModel::genJson(QJsonTreeItem * item) const
         QJsonValue va(item->value());
         return va;
     }
-
 }

@@ -26,11 +26,8 @@
 #define QJSONMODEL_H
 
 #include <QAbstractItemModel>
-#include <QJsonDocument>
-#include <QJsonValue>
 #include <QJsonArray>
 #include <QJsonObject>
-#include <QIcon>
 
 class QJsonModel;
 class QJsonItem;
@@ -97,8 +94,6 @@ private:
 
     QJsonTreeItem * mRootItem;
     QStringList mHeaders;
-
-
 };
 
 #endif // QJSONMODEL_H
