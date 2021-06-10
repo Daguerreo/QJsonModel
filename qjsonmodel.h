@@ -52,9 +52,6 @@ public:
 
     static QJsonTreeItem* load(const QJsonValue& value, QJsonTreeItem * parent = nullptr);
 
-protected:
-
-
 private:
     QString mKey;
     QString mValue;
@@ -76,9 +73,9 @@ public:
     QJsonModel(QIODevice * device, QObject *parent = nullptr);
     QJsonModel(const QByteArray& json, QObject *parent = nullptr);
     ~QJsonModel();
-    bool load(const QString& fileName);
-    bool load(QIODevice * device);
-    bool loadJson(const QByteArray& json);
+
+    // QAbstractItemModel Interface
+ public:
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
@@ -87,6 +84,11 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
+
+ public:
+    bool load(const QString& fileName);
+    bool load(QIODevice * device);
+    bool loadJson(const QByteArray& json);
     QJsonDocument json() const;
 
 private:

@@ -18,6 +18,8 @@ SOURCES += \
 HEADERS += \
     qjsonmodel.h
 
+RESOURCES += \
+   resources.qrc
 
 
 
