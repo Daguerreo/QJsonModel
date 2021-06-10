@@ -90,6 +90,7 @@ public:
     bool load(QIODevice * device);
     bool loadJson(const QByteArray& json);
     QJsonDocument json() const;
+    void clear();
 
 private:
     QJsonValue genJson(QJsonTreeItem *) const;

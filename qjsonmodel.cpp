@@ -360,6 +360,13 @@ QJsonDocument QJsonModel::json() const
    return doc;
 }
 
+void QJsonModel::clear()
+{
+   beginResetModel();
+   delete mRootItem;
+   endResetModel();
+}
+
 QJsonValue  QJsonModel::genJson(QJsonTreeItem * item) const
 {
    auto type   = item->type();
