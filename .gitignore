@@ -4,6 +4,17 @@
 *.o
 *.obj
 
+moc_*.cpp
+qrc_*.cpp
+
+# Generic files
+*~
+*.autosave
+*.a
+*.core
+*.moc
+Makefile*
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -28,5 +39,7 @@
 *.app
 
 # Qt 
-*.pro.user 
-
+*.pro.user*
+*.qmlproject.user
+**.qmake.stash
+**moc_predefs.h
