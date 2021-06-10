@@ -253,10 +253,10 @@ bool QJsonModel::setData(const QModelIndex &index, const QVariant &value, int ro
     int col = index.column();
     if (Qt::EditRole == role) {
         if (col == 1) {
-            QJsonTreeItem *item = static_cast<QJsonTreeItem*>(index.internalPointer());
-                item->setValue(value.toString());
-                emit dataChanged(index, index, {Qt::EditRole});
-                return true;
+            auto item = static_cast<QJsonTreeItem*>(index.internalPointer());
+            item->setValue(value.toString());
+            emit dataChanged(index, index, {Qt::EditRole});
+            return true;
         }
     }
 
