@@ -19,7 +19,6 @@
 
 #include <QApplication>
 #include <QTreeView>
-#include <QJsonDocument>
 
 #include "qjsonmodel.h"
 
@@ -30,7 +29,7 @@ int main(int argc, char *argv[])
     auto model = new QJsonModel();
     model->load(":/sample.json");
 
-    auto view  = new QTreeView();
+    auto view = new QTreeView();
     view->setModel(model);
     view->show();
 
