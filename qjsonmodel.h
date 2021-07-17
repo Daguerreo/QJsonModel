@@ -89,7 +89,7 @@ public:
 
  public:
     bool load(const QString& fileName);
-    bool load(QIODevice * device);
+    bool load(QIODevice* device);
     bool loadJson(const QByteArray& json);
     QJsonDocument json() const;
     void clear();
