@@ -549,8 +549,9 @@ void QJsonModel::valueToJson(QJsonValue jsonValue, QByteArray &json, int indent,
         json += '}';
         break;
     case QJsonValue::Null:
-
-   return doc;
+    default:
+        json += "null";
+    }
 }
 
 void QJsonModel::clear()
