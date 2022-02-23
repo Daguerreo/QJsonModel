@@ -329,14 +329,11 @@ private:
    void arrayContentToJson(QJsonArray jsonArray, QByteArray& json, int indent, bool compact) const;
    void objectContentToJson(QJsonObject jsonObject, QByteArray& json, int indent, bool compact) const;
    void valueToJson(QJsonValue jsonValue, QByteArray& json, int indent, bool compact) const;
-
-
-private:
    QJsonValue genJson(QJsonTreeItem* item) const;
    QJsonTreeItem* internalData(const QModelIndex& index) const;
 
+private:
    QJsonTreeItem* mRootItem;
-   QStringList mHeaders;
 };
 
 #endif // QJSONMODEL_H

@@ -222,36 +222,25 @@ QJsonModel::QJsonModel(QObject *parent)
     : QAbstractItemModel(parent)
     , mRootItem{new QJsonTreeItem}
 {
-   mHeaders.append("key");
-   mHeaders.append("value");
 }
 
 QJsonModel::QJsonModel(const QString& fileName, QObject* parent)
-   : QAbstractItemModel(parent)
-   , mRootItem{new QJsonTreeItem}
+   : QJsonModel(parent)
 {
-   mHeaders.append("key");
-   mHeaders.append("value");
    load(fileName);
 }
 
 QJsonModel::QJsonModel(QIODevice* device, QObject* parent)
-   : QAbstractItemModel(parent)
-   , mRootItem{new QJsonTreeItem}
+   : QJsonModel(parent)
 {
    if (device) {
-      mHeaders.append("key");
-      mHeaders.append("value");
       load(device);
    }
 }
 
 QJsonModel::QJsonModel(const QByteArray& json, QObject* parent)
-   : QAbstractItemModel(parent)
-   , mRootItem{new QJsonTreeItem}
+   : QJsonModel(parent)
 {
-   mHeaders.append("key");
-   mHeaders.append("value");
    loadJson(json);
 }
 
@@ -350,7 +339,8 @@ QVariant QJsonModel::headerData(int section, Qt::Orientation orientation, int ro
    }
 
    if (orientation == Qt::Horizontal) {
-      return mHeaders.value(section);
+      static const QStringList headers{{"key", "value"}};
+      return headers.value(section);
    }
    else {
       return QVariant();
