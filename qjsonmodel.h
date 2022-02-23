@@ -298,7 +298,12 @@ private:
 class QJsonModel : public QAbstractItemModel
 {
    Q_OBJECT
+   Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
+
 public:
+   enum Mode { Editable, ReadOnly };
+   Q_ENUM(Mode);
+
    explicit QJsonModel(QObject* parent = nullptr);
    explicit QJsonModel(const QString& fileName, QObject* parent = nullptr);
    explicit QJsonModel(QIODevice* device, QObject* parent = nullptr);
@@ -323,6 +328,12 @@ public:
    QByteArray json() const;
    void clear();
 
+   QJsonModel::Mode mode() const;
+   void setMode(const Mode& newMode);
+
+signals:
+   void modeChanged(const QJsonModel::Mode& mode);
+
 private:
    void objectToJson(QJsonObject jsonObject, QByteArray& json, int indent, bool compact) const;
    void arrayToJson(QJsonArray jsonArray, QByteArray& json, int indent, bool compact) const;
@@ -334,6 +345,7 @@ private:
 
 private:
    QJsonTreeItem* mRootItem;
+   Mode mMode;
 };
 
 #endif // QJSONMODEL_H

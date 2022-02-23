@@ -221,6 +221,7 @@ QByteArray escapedString(const QString &s)
 QJsonModel::QJsonModel(QObject *parent)
     : QAbstractItemModel(parent)
     , mRootItem{new QJsonTreeItem}
+    , mMode{Mode::ReadOnly}
 {
 }
 
@@ -403,7 +404,7 @@ int QJsonModel::columnCount(const QModelIndex& /*parent*/) const
 
 Qt::ItemFlags QJsonModel::flags(const QModelIndex& index) const
 {
-   if(!index.isValid()){
+   if(!index.isValid() || mMode == ReadOnly){
       return QAbstractItemModel::flags(index);
    }
 
@@ -582,3 +583,17 @@ QJsonTreeItem* QJsonModel::internalData(const QModelIndex& index) const
 }
 
 #include "moc_qjsonmodel.cpp"
+
+QJsonModel::Mode QJsonModel::mode() const
+{
+   return mMode;
+}
+
+void QJsonModel::setMode(const Mode& newMode)
+{
+   if (mMode == newMode){
+      return;
+   }
+   mMode = newMode;
+   emit modeChanged(mMode);
+}
