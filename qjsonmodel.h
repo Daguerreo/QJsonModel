@@ -320,15 +320,16 @@ public:
    bool load(const QString& fileName);
    bool load(QIODevice* device);
    bool loadJson(const QByteArray& json);
-    QByteArray json() ;
-    QByteArray jsonToByte(QJsonValue jsonValue);
-    void objectToJson(QJsonObject jsonObject, QByteArray &json, int indent, bool compact);
-    void arrayToJson(QJsonArray jsonArray, QByteArray &json, int indent, bool compact);
-    void arrayContentToJson(QJsonArray jsonArray, QByteArray &json, int indent, bool compact);
-    void objectContentToJson(QJsonObject jsonObject, QByteArray &json, int indent, bool compact);
-    void valueToJson(QJsonValue jsonValue, QByteArray &json, int indent, bool compact);
-
+   QByteArray json() const;
    void clear();
+
+private:
+   void objectToJson(QJsonObject jsonObject, QByteArray& json, int indent, bool compact) const;
+   void arrayToJson(QJsonArray jsonArray, QByteArray& json, int indent, bool compact) const;
+   void arrayContentToJson(QJsonArray jsonArray, QByteArray& json, int indent, bool compact) const;
+   void objectContentToJson(QJsonObject jsonObject, QByteArray& json, int indent, bool compact) const;
+   void valueToJson(QJsonValue jsonValue, QByteArray& json, int indent, bool compact) const;
+
 
 private:
    QJsonValue genJson(QJsonTreeItem* item) const;

@@ -25,7 +25,7 @@ void QJsonModelTest::test_load()
    auto tester = new QAbstractItemModelTester(&model, &model);
    model.load(":/sample.json");
 
-   qDebug() << model.json().toJson();
+   qDebug() << model.json();
 }
 
 void QJsonModelTest::test_save()
@@ -38,9 +38,8 @@ void QJsonModelTest::test_save()
 
    QJsonModel model;
    model.load(":/sample.json");
-   auto jsonStringCompare = model.json().toJson(QJsonDocument::Compact);
+   auto jsonStringCompare = jdoc.fromJson(model.json()).toJson(QJsonDocument::Compact);
 
-   // Test do not pass since values are stored as strings instead of qvariant
    QCOMPARE(jsonString, jsonStringCompare);
 }
 

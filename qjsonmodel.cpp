@@ -429,7 +429,7 @@ Qt::ItemFlags QJsonModel::flags(const QModelIndex& index) const
    }
 }
 
-QByteArray QJsonModel::json()
+QByteArray QJsonModel::json() const
 {
     auto jsonValue = genJson(mRootItem);
     QByteArray json;
@@ -448,14 +448,14 @@ QByteArray QJsonModel::json()
     return json;
 }
 
-void QJsonModel::objectToJson(QJsonObject jsonObject, QByteArray &json, int indent, bool compact)
+void QJsonModel::objectToJson(QJsonObject jsonObject, QByteArray &json, int indent, bool compact) const
 {
     json += compact ? "{" : "{\n";
     objectContentToJson(jsonObject, json, indent + (compact ? 0 : 1), compact);
     json += QByteArray(4 * indent, ' ');
     json += compact ? "}" : "}\n";
 }
-void QJsonModel::arrayToJson(QJsonArray jsonArray, QByteArray &json, int indent, bool compact)
+void QJsonModel::arrayToJson(QJsonArray jsonArray, QByteArray &json, int indent, bool compact) const
 {
     json += compact ? "[" : "[\n";
     arrayContentToJson(jsonArray, json, indent + (compact ? 0 : 1), compact);
@@ -463,7 +463,7 @@ void QJsonModel::arrayToJson(QJsonArray jsonArray, QByteArray &json, int indent,
     json += compact ? "]" : "]\n";
 }
 
-void QJsonModel::arrayContentToJson(QJsonArray jsonArray, QByteArray &json, int indent, bool compact)
+void QJsonModel::arrayContentToJson(QJsonArray jsonArray, QByteArray &json, int indent, bool compact) const
 {
     if (jsonArray.size() <= 0)
     {
@@ -484,7 +484,7 @@ void QJsonModel::arrayContentToJson(QJsonArray jsonArray, QByteArray &json, int 
         json += compact ? "," : ",\n";
     }
 }
-void QJsonModel::objectContentToJson(QJsonObject jsonObject, QByteArray &json, int indent, bool compact)
+void QJsonModel::objectContentToJson(QJsonObject jsonObject, QByteArray &json, int indent, bool compact) const
 {
     if (jsonObject.size() <= 0)
     {
@@ -510,7 +510,7 @@ void QJsonModel::objectContentToJson(QJsonObject jsonObject, QByteArray &json, i
     }
 }
 
-void QJsonModel::valueToJson(QJsonValue jsonValue, QByteArray &json, int indent, bool compact)
+void QJsonModel::valueToJson(QJsonValue jsonValue, QByteArray &json, int indent, bool compact) const
 {
     QJsonValue::Type type = jsonValue.type();
     switch (type)
