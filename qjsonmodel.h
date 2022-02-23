@@ -300,9 +300,9 @@ class QJsonModel : public QAbstractItemModel
    Q_OBJECT
 public:
    explicit QJsonModel(QObject* parent = nullptr);
-   QJsonModel(const QString& fileName, QObject* parent = nullptr);
-   QJsonModel(QIODevice* device, QObject* parent = nullptr);
-   QJsonModel(const QByteArray& json, QObject* parent = nullptr);
+   explicit QJsonModel(const QString& fileName, QObject* parent = nullptr);
+   explicit QJsonModel(QIODevice* device, QObject* parent = nullptr);
+   explicit QJsonModel(const QByteArray& json, QObject* parent = nullptr);
    ~QJsonModel();
 
    // QAbstractItemModel Interface
