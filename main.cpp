@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     auto model = new QJsonModel();
-    model->load(":/sample.json");
+    model->loadFromFile(":/sample.json");
     model->setMode(QJsonModel::Editable);
 
     auto view = new QTreeView();

@@ -228,21 +228,21 @@ QJsonModel::QJsonModel(QObject *parent)
 QJsonModel::QJsonModel(const QString& fileName, QObject* parent)
    : QJsonModel(parent)
 {
-   load(fileName);
+   loadFromFile(fileName);
 }
 
 QJsonModel::QJsonModel(QIODevice* device, QObject* parent)
    : QJsonModel(parent)
 {
    if (device) {
-      load(device);
+      loadFromDevice(device);
    }
 }
 
 QJsonModel::QJsonModel(const QByteArray& json, QObject* parent)
    : QJsonModel(parent)
 {
-   loadJson(json);
+   loadFromRaw(json);
 }
 
 QJsonModel::~QJsonModel()
@@ -250,46 +250,64 @@ QJsonModel::~QJsonModel()
    delete mRootItem;
 }
 
-bool QJsonModel::load(const QString& fileName)
+bool QJsonModel::loadFromFile(const QString& fileName)
 {
    QFile file(fileName);
    bool success = false;
 
    if (file.open(QIODevice::ReadOnly)) {
-      success = load(&file);
+      success = loadFromDevice(&file);
       file.close();
    }
 
    return success;
 }
 
-bool QJsonModel::load(QIODevice* device)
+bool QJsonModel::loadFromDevice(QIODevice* device)
 {
-   return loadJson(device->readAll());
+   return loadFromRaw(device->readAll());
 }
 
-bool QJsonModel::loadJson(const QByteArray& json)
+bool QJsonModel::loadFromValue(const QJsonValue& value)
 {
-   auto const& jdoc = QJsonDocument::fromJson(json);
-
-   if (!jdoc.isNull())
-   {
-      beginResetModel();
-      delete mRootItem;
-      if (jdoc.isArray()) {
-         mRootItem = QJsonTreeItem::load(QJsonValue(jdoc.array()));
-         mRootItem->setType(QJsonValue::Array);
-
-      } else {
-         mRootItem = QJsonTreeItem::load(QJsonValue(jdoc.object()));
-         mRootItem->setType(QJsonValue::Object);
-      }
-      endResetModel();
-      return true;
+   if(!value.isObject() && !value.isArray()) {
+      qDebug() << Q_FUNC_INFO << "value must be object or array";
+      return false;
    }
 
-   qDebug() << Q_FUNC_INFO << "cannot load json";
-   return false;
+   beginResetModel();
+   delete mRootItem;
+   mRootItem = QJsonTreeItem::load(value);
+   mRootItem->setType(value.isObject() ? QJsonValue::Object : QJsonValue::Array);
+   endResetModel();
+
+   return true;
+}
+
+bool QJsonModel::loadFromDocument(const QJsonDocument& document)
+{
+   if(document.isNull()) {
+      qDebug() << Q_FUNC_INFO << "cannot load json";
+      return false;
+   }
+
+   beginResetModel();
+   delete mRootItem;
+   if (document.isArray()) {
+      mRootItem = QJsonTreeItem::load(QJsonValue(document.array()));
+      mRootItem->setType(QJsonValue::Array);
+
+   } else {
+      mRootItem = QJsonTreeItem::load(QJsonValue(document.object()));
+      mRootItem->setType(QJsonValue::Object);
+   }
+   endResetModel();
+   return true;
+}
+
+bool QJsonModel::loadFromRaw(const QByteArray& json)
+{
+   return loadFromDocument(QJsonDocument::fromJson(json));
 }
 
 QVariant QJsonModel::data(const QModelIndex& index, int role) const
@@ -420,21 +438,18 @@ Qt::ItemFlags QJsonModel::flags(const QModelIndex& index) const
    }
 }
 
-QByteArray QJsonModel::json() const
+QByteArray QJsonModel::json(bool compact) const
 {
     auto jsonValue = genJson(mRootItem);
     QByteArray json;
-    if (jsonValue.isNull())
-    {
+    if (jsonValue.isNull()) {
         return json;
     }
-    if (jsonValue.isArray())
-    {
-        arrayToJson(jsonValue.toArray(), json, 0, false);
+    if (jsonValue.isArray()) {
+        arrayToJson(jsonValue.toArray(), json, 0, compact);
     }
-    else
-    {
-        objectToJson(jsonValue.toObject(), json, 0, false);
+    else {
+        objectToJson(jsonValue.toObject(), json, 0, compact);
     }
     return json;
 }
@@ -446,6 +461,7 @@ void QJsonModel::objectToJson(QJsonObject jsonObject, QByteArray &json, int inde
     json += QByteArray(4 * indent, ' ');
     json += compact ? "}" : "}\n";
 }
+
 void QJsonModel::arrayToJson(QJsonArray jsonArray, QByteArray &json, int indent, bool compact) const
 {
     json += compact ? "[" : "[\n";
@@ -549,6 +565,7 @@ void QJsonModel::clear()
 {
    beginResetModel();
    delete mRootItem;
+   mRootItem = new QJsonTreeItem();
    endResetModel();
 }
 

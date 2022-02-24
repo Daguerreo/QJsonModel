@@ -322,10 +322,12 @@ public:
    Qt::ItemFlags flags(const QModelIndex& index) const override;
 
 public:
-   bool load(const QString& fileName);
-   bool load(QIODevice* device);
-   bool loadJson(const QByteArray& json);
-   QByteArray json() const;
+   bool loadFromFile(const QString& fileName);
+   bool loadFromDevice(QIODevice* device);
+   bool loadFromValue(const QJsonValue& value);
+   bool loadFromDocument(const QJsonDocument& document);
+   bool loadFromRaw(const QByteArray& json);
+   QByteArray json(bool compact = false) const;
    void clear();
 
    QJsonModel::Mode mode() const;
