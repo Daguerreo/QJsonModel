@@ -552,6 +552,20 @@ void QJsonModel::clear()
    endResetModel();
 }
 
+QJsonModel::Mode QJsonModel::mode() const
+{
+   return mMode;
+}
+
+void QJsonModel::setMode(const Mode& newMode)
+{
+   if (mMode == newMode){
+      return;
+   }
+   mMode = newMode;
+   emit modeChanged(mMode);
+}
+
 QJsonValue QJsonModel::genJson(QJsonTreeItem* item) const
 {
    auto type = item->type();
@@ -583,17 +597,3 @@ QJsonTreeItem* QJsonModel::internalData(const QModelIndex& index) const
 }
 
 #include "moc_qjsonmodel.cpp"
-
-QJsonModel::Mode QJsonModel::mode() const
-{
-   return mMode;
-}
-
-void QJsonModel::setMode(const Mode& newMode)
-{
-   if (mMode == newMode){
-      return;
-   }
-   mMode = newMode;
-   emit modeChanged(mMode);
-}
