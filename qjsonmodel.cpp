@@ -257,7 +257,6 @@ bool QJsonModel::loadFromFile(const QString& fileName)
 
    if (file.open(QIODevice::ReadOnly)) {
       success = loadFromDevice(&file);
-      qDebug("Successful!");
       file.close();
    }
    return success;
