@@ -259,8 +259,17 @@ bool QJsonModel::loadFromFile(const QString& fileName)
       success = loadFromDevice(&file);
       file.close();
    }
-
    return success;
+}
+
+bool QJsonModel::loadFromString(const QString qStr) {
+    QByteArray qba = qStr.toLocal8Bit();
+    return loadFromRaw(qba);
+}
+
+bool QJsonModel::loadFromStdString(const std::string str) {
+    QString qStr = QString::fromStdString(str);
+    return loadFromString(qStr);
 }
 
 bool QJsonModel::loadFromDevice(QIODevice* device)

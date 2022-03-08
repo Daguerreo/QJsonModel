@@ -323,6 +323,8 @@ public:
 
 public:
    bool loadFromFile(const QString& fileName);
+   bool loadFromString(const QString qStr);
+   bool loadFromStdString(const std::string str);
    bool loadFromDevice(QIODevice* device);
    bool loadFromValue(const QJsonValue& value);
    bool loadFromDocument(const QJsonDocument& document);

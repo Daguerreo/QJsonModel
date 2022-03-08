@@ -11,6 +11,8 @@ private slots:
 
    void tester();
    void loadFromFile();
+   void loadFromString();
+   void loadFromStdString();
    void loadFromDevice();
    void loadFromDocument();
    void loadFromValue();
@@ -46,6 +48,76 @@ void QJsonModelTest::loadFromFile()
    auto tester = new QAbstractItemModelTester(&model, &model);
    (void)tester; // shut up warnings;
    const bool result = model.loadFromFile(":/sample.json");
+
+   QVERIFY(result);
+   QCOMPARE(model.json(true), _json);
+}
+
+void QJsonModelTest::loadFromString()
+{
+   QJsonModel model;
+   auto tester = new QAbstractItemModelTester(&model, &model);
+   (void)tester; // shut up warnings;
+   QString qStr = "\
+   {\
+      \"firstName\": \"John\",\
+      \"lastName\": \"Smith\",\
+      \"age\": 25,\
+      \"address\": {\
+         \"streetAddress\": \"21 2nd Street\",\
+         \"city\": \"New York\",\
+         \"state\": \"NY\",\
+         \"postalCode\": \"10021\",\
+         \"owner\": true\
+      },\
+      \"phoneNumber\": [\
+         {\
+           \"type\": \"home\",\
+           \"number\": \"212 555-1234\"\
+         },\
+         {\
+           \"type\": \"fax\",\
+           \"number\": \"646 555-4567\"\
+         }\
+      ]\
+   }";
+
+   const bool result = model.loadFromString(qStr);
+
+   QVERIFY(result);
+   QCOMPARE(model.json(true), _json);
+}
+
+void QJsonModelTest::loadFromStdString()
+{
+   QJsonModel model;
+   auto tester = new QAbstractItemModelTester(&model, &model);
+   (void)tester; // shut up warnings;
+   std::string str = "\
+   {\
+      \"firstName\": \"John\",\
+      \"lastName\": \"Smith\",\
+      \"age\": 25,\
+      \"address\": {\
+         \"streetAddress\": \"21 2nd Street\",\
+         \"city\": \"New York\",\
+         \"state\": \"NY\",\
+         \"postalCode\": \"10021\",\
+         \"owner\": true\
+      },\
+      \"phoneNumber\": [\
+         {\
+           \"type\": \"home\",\
+           \"number\": \"212 555-1234\"\
+         },\
+         {\
+           \"type\": \"fax\",\
+           \"number\": \"646 555-4567\"\
+         }\
+      ]\
+   }";
+
+   const bool result = model.loadFromStdString(str);
 
    QVERIFY(result);
    QCOMPARE(model.json(true), _json);
